@@ -1,0 +1,23 @@
+package com.cheong.ecommerce_ai_driven.company.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class AddressInput {
+
+    private String line1;
+
+    private String line2;
+
+    private String city;
+
+    private String state;
+
+    private String zip;
+
+    private AddressType type;
+}
