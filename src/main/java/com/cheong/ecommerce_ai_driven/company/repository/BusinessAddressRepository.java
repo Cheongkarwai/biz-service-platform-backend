@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface BusinessAddressRepository extends R2dbcRepository<BusinessAddress, String> {
 
-    Flux<BusinessAddress> findAllByBusinessIdAndAddressId(String businessId, String addressId);
+    Flux<BusinessAddress> findAllByIdAndAddressId(String businessId, String addressId);
 
-    Flux<BusinessAddress> findAllByBusinessId(UUID id);
+    Flux<BusinessAddress> findAllById(String  id);
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/customers")
+@RequestMapping("/api/v1/customers")
 public class CustomerController {
 
     private final CustomerService customerService;
@@ -29,6 +29,7 @@ public class CustomerController {
     public Mono<Void> save(@Validated(OrderedValidation.class) @RequestBody CustomerInput customerInput){
         return customerService.save(customerInput);
     }
+
 
     @PatchMapping(value = "/{id}", consumes = "application/json-patch+json")
     public Mono<ResponseEntity<Void>> partialUpdate(@PathVariable String id, @RequestBody JsonPatch jsonPatch){

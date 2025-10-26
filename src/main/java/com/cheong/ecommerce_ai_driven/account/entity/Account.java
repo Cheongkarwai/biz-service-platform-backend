@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -30,9 +31,14 @@ public class Account implements BaseEntity {
     private AccountStatus status;
 
     @Column("customer_id")
-    private UUID customerId;
+    private String customerId;
 
     @Column("business_id")
-    private UUID businessId;
+    private String businessId;
 
+    @Column("supabase_user_id")
+    private String supabaseUserId;
+
+    @Version
+    private Long version;
 }

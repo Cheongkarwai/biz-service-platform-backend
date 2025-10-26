@@ -3,7 +3,8 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS service
 (
     id   VARCHAR(255) PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+    name VARCHAR(100) NOT NULL,
+    version INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS business
@@ -15,7 +16,8 @@ CREATE TABLE IF NOT EXISTS business
     overview      VARCHAR(255) NOT NULL,
     joined_at     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version INT NOT NULL DEFAULT 0
 );
 
 
@@ -26,7 +28,8 @@ CREATE TABLE IF NOT EXISTS business_service
     service_id  VARCHAR(255) NOT NULL,
     UNIQUE (business_id, service_id),
     FOREIGN KEY (business_id) REFERENCES business (id),
-    FOREIGN KEY (service_id) REFERENCES service (id)
+    FOREIGN KEY (service_id) REFERENCES service (id),
+    version INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS review
@@ -37,7 +40,8 @@ CREATE TABLE IF NOT EXISTS review
     service_id VARCHAR(255)        NOT NULL,
     created_at TIMESTAMP    NOT NULL,
     updated_at TIMESTAMP    NOT NULL,
-    FOREIGN KEY (service_id) REFERENCES service (id)
+    FOREIGN KEY (service_id) REFERENCES service (id),
+    version INT NOT NULL DEFAULT 0
 );
 
 
@@ -50,7 +54,8 @@ CREATE TABLE IF NOT EXISTS address
     zip        VARCHAR(255) NOT NULL,
     type       VARCHAR(100) NOT NULL,
     created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version INT NOT NULL DEFAULT 0
 );
 
 
@@ -61,7 +66,8 @@ CREATE TABLE IF NOT EXISTS business_address
     address_id  VARCHAR(255) NOT NULL,
     UNIQUE (business_id, address_id),
     FOREIGN KEY (business_id) REFERENCES business (id),
-    FOREIGN KEY (address_id) REFERENCES address (id)
+    FOREIGN KEY (address_id) REFERENCES address (id),
+    version INT NOT NULL DEFAULT 0
 );
 
 
@@ -72,7 +78,8 @@ CREATE TABLE IF NOT EXISTS social_account
     url         VARCHAR(255) NOT NULL,
     business_id VARCHAR(255)         NOT NULL,
     PRIMARY KEY (username),
-    FOREIGN KEY (business_id) REFERENCES business (id)
+    FOREIGN KEY (business_id) REFERENCES business (id),
+    version INT NOT NULL DEFAULT 0
 );
 
 
@@ -85,7 +92,8 @@ CREATE TABLE IF NOT EXISTS outbox_event
     payload        TEXT         NOT NULL,
     created_at     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    is_published   BOOLEAN      NOT NULL DEFAULT FALSE
+    is_published   BOOLEAN      NOT NULL DEFAULT FALSE,
+    version INT NOT NULL DEFAULT 0
 );
 
 
@@ -96,7 +104,10 @@ CREATE TABLE IF NOT EXISTS customer
     last_name     VARCHAR(255),
     birth_date    DATE NOT NULL,
     mobile_number VARCHAR(100) UNIQUE NOT NULL,
-    email_address VARCHAR(255) UNIQUE NOT NULL
+    email_address VARCHAR(255) UNIQUE NOT NULL,
+    created_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version INT NOT NULL DEFAULT 0
 );
 
 
@@ -107,6 +118,8 @@ CREATE TABLE IF NOT EXISTS account
     status      VARCHAR(100) NOT NULL DEFAULT 'ACTIVE',
     customer_id VARCHAR(255),
     business_id VARCHAR(255),
+    supabase_user_id VARCHAR(255) UNIQUE,
+    version INT NOT NULL DEFAULT 0,
     FOREIGN KEY (customer_id) REFERENCES customer (id),
     FOREIGN KEY (business_id) REFERENCES business (id)
 );

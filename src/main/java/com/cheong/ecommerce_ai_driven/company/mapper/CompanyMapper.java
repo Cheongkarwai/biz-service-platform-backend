@@ -10,6 +10,8 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface CompanyMapper {
 
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     BusinessDTO mapToCompanyDTO(Business business);
 
     Business mapToBusiness(BusinessInput businessInput);

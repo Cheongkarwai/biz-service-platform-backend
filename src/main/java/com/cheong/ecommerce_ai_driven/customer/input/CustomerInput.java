@@ -3,7 +3,8 @@ package com.cheong.ecommerce_ai_driven.customer.input;
 import com.cheong.ecommerce_ai_driven.common.AdvanceValidation;
 import com.cheong.ecommerce_ai_driven.common.BasicValidation;
 import com.cheong.ecommerce_ai_driven.customer.validation.MinAge;
-import jakarta.validation.constraints.Email;
+import com.cheong.ecommerce_ai_driven.user.dto.UserInput;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -27,10 +28,10 @@ public class CustomerInput {
     @MinAge(groups = {AdvanceValidation.class})
     private LocalDate birthDate;
 
-    @NotBlank(message = "{constraints.emailAddress.required.error}", groups = {BasicValidation.class})
+    @NotBlank(message = "{constraints.mobileNumber.required.error}", groups = {BasicValidation.class})
     private String mobileNumber;
 
-    @NotBlank(message = "{constraints.emailAddress.required.error}", groups = {BasicValidation.class})
-    @Email(message = "{constraints.emailAddress.invalid.error}", groups = {AdvanceValidation.class})
-    private String emailAddress;
+    @Valid
+    @NotNull(message = "{constraints.accountDetails.required.error}", groups = {BasicValidation.class})
+    private UserInput accountDetails;
 }

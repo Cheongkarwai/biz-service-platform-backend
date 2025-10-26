@@ -19,4 +19,5 @@ public interface BaseEntity extends Persistable<String> {
         return result;
     }
 
+
 }

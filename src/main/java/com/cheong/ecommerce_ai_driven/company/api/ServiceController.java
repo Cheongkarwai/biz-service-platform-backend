@@ -19,7 +19,7 @@ public class ServiceController {
     }
 
     @GetMapping("/{id}")
-    public Mono<ServiceDTO> findById(@PathVariable UUID id){
+    public Mono<ServiceDTO> findById(@PathVariable String id){
         return companyService.findServiceById(id);
     }
 

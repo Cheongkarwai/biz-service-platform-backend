@@ -1,11 +1,14 @@
 package com.cheong.ecommerce_ai_driven.account.service;
 
 import com.cheong.ecommerce_ai_driven.account.dto.AccountDTO;
+import com.cheong.ecommerce_ai_driven.account.entity.Account;
 import com.cheong.ecommerce_ai_driven.account.input.AccountInput;
 import com.cheong.ecommerce_ai_driven.account.mapper.AccountMapper;
 import com.cheong.ecommerce_ai_driven.account.repository.AccountRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import javax.security.auth.login.AccountNotFoundException;
 
 @Service
 public class AccountService implements IAccountService {
@@ -22,8 +25,18 @@ public class AccountService implements IAccountService {
 
     public Mono<AccountDTO> getAccountById(String accountId){
         return accountRepository.findById(accountId)
+                .switchIfEmpty(Mono.error(new RuntimeException("Account not found")))
                 .map(accountMapper::mapToAccountDTO);
 
+    }
+
+    public Mono<Account> findById(String accountId){
+        return accountRepository.findById(accountId);
+    }
+
+    public Mono<Account> findByCustomerId(String customerId){
+        return accountRepository.findByCustomerId(customerId)
+                .switchIfEmpty(Mono.error(new AccountNotFoundException("Account not found")));
     }
 
     @Override
@@ -52,4 +65,11 @@ public class AccountService implements IAccountService {
                 .flatMap(accountRepository::save)
                 .map(accountMapper::mapToAccountDTO);
     }
+
+    @Override
+    public Mono<Account> save(Account account) {
+        return accountRepository.save(account);
+    }
+
+
 }

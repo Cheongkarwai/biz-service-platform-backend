@@ -5,5 +5,5 @@ import org.springframework.data.r2dbc.repository.R2dbcRepository;
 
 import java.util.UUID;
 
-public interface CompanyRepository extends R2dbcRepository<Business, UUID>, CustomCompanyRepository{
+public interface CompanyRepository extends R2dbcRepository<Business, String>, CustomCompanyRepository{
 }

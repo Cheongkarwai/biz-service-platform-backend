@@ -4,6 +4,7 @@ import com.cheong.ecommerce_ai_driven.company.dto.ImageType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Data
@@ -24,4 +25,6 @@ public class Image {
 
     private ImageType type;
 
+    @Version
+    private Long version;
 }

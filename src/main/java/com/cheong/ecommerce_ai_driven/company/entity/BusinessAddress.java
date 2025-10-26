@@ -1,10 +1,12 @@
 package com.cheong.ecommerce_ai_driven.company.entity;
 
+import com.cheong.ecommerce_ai_driven.common.dto.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Embedded;
@@ -16,26 +18,20 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("business_address")
-public class BusinessAddress implements Persistable<UUID> {
+public class BusinessAddress implements BaseEntity {
 
     @Id
     @Column("business_id")
-    private UUID businessId;
+    private String id;
 
     @Column("address_id")
-    private UUID addressId;
+    private String addressId;
 
-    @Transient
-    private boolean isNew;
+    @Version
+    private Long version;
 
-    @Override
-    public UUID getId() {
-        return businessId;
+    public BusinessAddress(String businessId, String addressId) {
+        this.id = businessId;
+        this.addressId = addressId;
     }
-
-    @Override
-    public boolean isNew() {
-        return isNew;
-    }
-
 }

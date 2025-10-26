@@ -81,14 +81,14 @@ public class CompanyService {
     }
 
     @Transactional(readOnly = true)
-    public Mono<BusinessDTO> findById(UUID id) {
+    public Mono<BusinessDTO> findById(String id) {
         return companyRepository.findById(id)
                 .map(companyMapper::mapToCompanyDTO)
                 .doOnError(error -> log.error("Error occurred while fetching company with id {}", id, error));
     }
 
     @Transactional(readOnly = true)
-    public Mono<ServiceDTO> findServiceById(UUID id) {
+    public Mono<ServiceDTO> findServiceById(String id) {
         return serviceRepository.findById(id)
                 .map(serviceMapper::mapToServiceDTO)
                 .doOnError(error -> log.error("Error occurred while fetching service with id {}", id, error));
@@ -116,8 +116,8 @@ public class CompanyService {
     }
 
     @Transactional(readOnly = true)
-    public Flux<AddressDTO> findAllAddressesById(UUID id) {
-        return businessAddressRepository.findAllByBusinessId(id)
+    public Flux<AddressDTO> findAllAddressesById(String id) {
+        return businessAddressRepository.findAllById(id)
                 .flatMap(businessAddress -> addressRepository.findById(businessAddress.getAddressId()))
                 .map(addressMapper::mapToAddressDTO);
     }
@@ -167,7 +167,7 @@ public class CompanyService {
     }
 
     private Flux<BusinessAddress> saveAddresses(List<Address> addresses,
-                                                UUID companyId) {
+                                                String companyId) {
         Flux<Address> addressFlux = Flux.fromIterable(addresses)
                 .map(address -> address);
 
@@ -176,6 +176,6 @@ public class CompanyService {
                     log.info("Saved address with id {}", address.getId());
                     log.info("Saved company with id {}", companyId);
                 })
-                .flatMap(address -> businessAddressRepository.save(new BusinessAddress(companyId, address.getId(), true)));
+                .flatMap(address -> businessAddressRepository.save(new BusinessAddress(companyId, address.getId())));
     }
 }

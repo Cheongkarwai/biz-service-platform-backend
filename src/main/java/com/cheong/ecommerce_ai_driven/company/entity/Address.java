@@ -3,6 +3,7 @@ package com.cheong.ecommerce_ai_driven.company.entity;
 import com.cheong.ecommerce_ai_driven.company.dto.AddressType;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -14,7 +15,7 @@ import java.util.UUID;
 public class Address {
 
     @Id
-    private UUID id;
+    private String id;
 
     private String street;
 
@@ -31,4 +32,7 @@ public class Address {
 
     @Column("updated_at")
     private LocalDateTime updatedAt;
+
+    @Version
+    private Long version;
 }

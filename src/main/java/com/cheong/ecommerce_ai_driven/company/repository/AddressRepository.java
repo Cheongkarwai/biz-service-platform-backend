@@ -6,5 +6,5 @@ import reactor.core.publisher.Flux;
 
 import java.util.UUID;
 
-public interface AddressRepository extends R2dbcRepository<Address, UUID> {
+public interface AddressRepository extends R2dbcRepository<Address, String> {
 }

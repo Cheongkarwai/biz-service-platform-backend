@@ -107,10 +107,20 @@
             <artifactId>json-patch</artifactId>
             <version>1.13</version>
         </dependency>
-<!--        <dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+        <!--        <dependency>-->
 <!--            <groupId>com.fasterxml.jackson.datatype</groupId>-->
 <!--            <artifactId>jackson-datatype-jsr310</artifactId>-->
 <!--        </dependency>-->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-resolver-dns-native-macos</artifactId>
+            <version>4.1.111.Final</version> <!-- match your Netty version -->
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>

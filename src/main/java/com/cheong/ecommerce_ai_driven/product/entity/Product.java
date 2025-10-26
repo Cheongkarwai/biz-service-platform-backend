@@ -3,6 +3,7 @@ package com.cheong.ecommerce_ai_driven.product.entity;
 import com.cheong.ecommerce_ai_driven.product.dto.Status;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Data
@@ -17,4 +18,7 @@ public class Product {
     private String description;
 
     private Status status;
+
+    @Version
+    private Long version;
 }

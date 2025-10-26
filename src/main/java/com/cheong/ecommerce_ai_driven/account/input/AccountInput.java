@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AccountInput {
 
+    private String id;
+
     private AccountStatus status;
 
     private String customerId;

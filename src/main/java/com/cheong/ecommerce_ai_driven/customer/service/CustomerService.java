@@ -2,8 +2,10 @@ package com.cheong.ecommerce_ai_driven.customer.service;
 
 import com.cheong.ecommerce_ai_driven.account.dto.AccountStatus;
 import com.cheong.ecommerce_ai_driven.account.dto.AccountType;
+import com.cheong.ecommerce_ai_driven.account.exception.AuthAccountNotFoundException;
+import com.cheong.ecommerce_ai_driven.account.exception.CustomerNotFoundException;
 import com.cheong.ecommerce_ai_driven.account.input.AccountInput;
-import com.cheong.ecommerce_ai_driven.account.service.AccountService;
+import com.cheong.ecommerce_ai_driven.account.service.IAccountService;
 import com.cheong.ecommerce_ai_driven.common.paging.dto.Connection;
 import com.cheong.ecommerce_ai_driven.common.util.RetryUtil;
 import com.cheong.ecommerce_ai_driven.customer.dto.CustomerDTO;
@@ -12,6 +14,8 @@ import com.cheong.ecommerce_ai_driven.customer.input.CustomerInput;
 import com.cheong.ecommerce_ai_driven.customer.mapper.CustomerMapper;
 import com.cheong.ecommerce_ai_driven.customer.repository.CustomerRepository;
 import com.cheong.ecommerce_ai_driven.customer.validation.ValidationService;
+import com.cheong.ecommerce_ai_driven.user.adapter.AuthProvider;
+import com.cheong.ecommerce_ai_driven.user.mapper.UserMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +28,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
+import javax.security.auth.login.AccountNotFoundException;
+
 @Service
 @Slf4j
 public class CustomerService {
@@ -32,7 +38,7 @@ public class CustomerService {
 
     private final CustomerMapper customerMapper;
 
-    private final AccountService accountService;
+    private final IAccountService accountService;
 
     private final ValidationService validationService;
 
@@ -40,23 +46,35 @@ public class CustomerService {
 
     private final ObjectMapper objectMapper;
 
+    private final AuthProvider authProvider;
+
+    private final UserMapper userMapper;
+
     public CustomerService(CustomerRepository customerRepository,
                            CustomerMapper customerMapper,
-                           AccountService accountService,
+                           IAccountService accountService,
                            ValidationService validationService,
                            RetryUtil retryUtil,
-                           ObjectMapper objectMapper) {
+                           ObjectMapper objectMapper,
+                           AuthProvider authProvider,
+                           UserMapper userMapper
+    ) {
         this.customerRepository = customerRepository;
         this.customerMapper = customerMapper;
         this.accountService = accountService;
         this.validationService = validationService;
         this.retryUtil = retryUtil;
         this.objectMapper = objectMapper;
+        this.authProvider = authProvider;
+        this.userMapper = userMapper;
     }
 
     public Mono<CustomerDTO> findById(String id) {
         return customerRepository.findById(id)
-                .map(customerMapper::mapToCustomerDTO);
+                .switchIfEmpty(Mono.defer(()-> Mono.error(new CustomerNotFoundException("Customer not found"))))
+                .zipWhen(customer -> accountService.findByCustomerId(customer.getId()))
+                .flatMap(tuple-> authProvider.findByUserId(tuple.getT2().getSupabaseUserId())
+                        .map(userDTO -> customerMapper.mapToCustomerDTO(tuple.getT1(), tuple.getT2(), userDTO)));
     }
 
     public Mono<Connection<CustomerDTO>> findAll(String after, String before, int limit) {
@@ -83,21 +101,28 @@ public class CustomerService {
     public Mono<Void> save(CustomerInput customerInput) {
 
         Mono<Tuple2<Boolean, Boolean>> customerValidationMono = Mono.zip(
-                validationService.validateEmail(customerInput.getEmailAddress()),
+                validationService.validateEmail(customerInput.getAccountDetails().getEmail()),
                 validationService.validateMobileNumber(customerInput.getMobileNumber())
         );
 
         return customerValidationMono
                 .flatMap(v -> Mono.just(customerInput)
-                .map(customerMapper::mapToCustomer)
-                .flatMap(customerRepository::save)
-                .flatMap(customer -> accountService.save(AccountInput.builder()
-                        .customerId(customer.getId())
-                        .status(AccountStatus.INACTIVE)
-                        .type(AccountType.PERSONAL)
-                        .build()))
+                        .map(customerMapper::mapToCustomer)
+                        .flatMap(customerRepository::save)
+                        .flatMap(customer -> accountService.save(AccountInput.builder()
+                                .customerId(customer.getId())
+                                .status(AccountStatus.INACTIVE)
+                                .type(AccountType.PERSONAL)
+                                .build()))
+                        .flatMap(accountDTO -> authProvider.signUp(customerInput.getAccountDetails())
+                                .flatMap(userDTO -> accountService.findById(accountDTO.getId())
+                                        .map(savedAccount -> {
+                                            savedAccount.setSupabaseUserId(userDTO.getId());
+                                            return savedAccount;
+                                        }).flatMap(accountService::save))
+                        )
                         .retryWhen(retryUtil.getRetrySpec())
-                .then());
+                        .then());
     }
 
     public Mono<Void> patch(String id, JsonPatch jsonPatch) {

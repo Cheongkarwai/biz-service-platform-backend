@@ -18,14 +18,14 @@ import java.util.UUID;
 @RequestMapping("/api/v1/companies")
 public class CompanyController {
 
-    private CompanyService companyService;
+    private final CompanyService companyService;
 
     public CompanyController(CompanyService companyService) {
         this.companyService = companyService;
     }
 
     @GetMapping("/{id}")
-    public Mono<BusinessDTO> findById(@PathVariable UUID id){
+    public Mono<BusinessDTO> findById(@PathVariable String id){
         return companyService.findById(id);
     }
     
@@ -37,7 +37,7 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}/addresses")
-    public Flux<AddressDTO> findAddressesByCompanyId(@PathVariable UUID id){
+    public Flux<AddressDTO> findAddressesByCompanyId(@PathVariable String id){
         return companyService.findAllAddressesById(id);
     }
 
