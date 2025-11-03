@@ -1,5 +1,6 @@
 package com.cheong.ecommerce_ai_driven.company.dto;
 
+import com.cheong.ecommerce_ai_driven.speciality.dto.SpecialityDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,5 +22,5 @@ public class BusinessInput {
 
     private List<AddressDTO> addresses;
 
-    private List<ServiceDTO> services;
+    private List<SpecialityDTO> services;
 }

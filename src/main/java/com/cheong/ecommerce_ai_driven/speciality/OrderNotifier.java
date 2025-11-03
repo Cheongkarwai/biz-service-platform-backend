@@ -1,4 +1,4 @@
-package com.cheong.ecommerce_ai_driven.service;
+package com.cheong.ecommerce_ai_driven.speciality;
 
 public interface OrderNotifier {
 

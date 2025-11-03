@@ -5,6 +5,8 @@ import com.cheong.ecommerce_ai_driven.account.entity.Account;
 import com.cheong.ecommerce_ai_driven.account.input.AccountInput;
 import com.cheong.ecommerce_ai_driven.account.mapper.AccountMapper;
 import com.cheong.ecommerce_ai_driven.account.repository.AccountRepository;
+import com.cheong.ecommerce_ai_driven.user.adapter.SupabaseUserAdapter;
+import com.cheong.ecommerce_ai_driven.user.dto.RecoverPasswordRequest;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -17,10 +19,14 @@ public class AccountService implements IAccountService {
 
     private final AccountMapper accountMapper;
 
+    private final SupabaseUserAdapter supabaseUserAdapter;
+
     public AccountService(AccountRepository accountRepository,
-                          AccountMapper accountMapper) {
+                          AccountMapper accountMapper,
+                          SupabaseUserAdapter supabaseUserAdapter) {
         this.accountRepository = accountRepository;
         this.accountMapper = accountMapper;
+        this.supabaseUserAdapter = supabaseUserAdapter;
     }
 
     public Mono<AccountDTO> getAccountById(String accountId){
@@ -69,6 +75,11 @@ public class AccountService implements IAccountService {
     @Override
     public Mono<Account> save(Account account) {
         return accountRepository.save(account);
+    }
+
+    @Override
+    public Mono<Void> recoverPassword(RecoverPasswordRequest recoverPasswordRequest) {
+        return supabaseUserAdapter.recoverPassword(recoverPasswordRequest);
     }
 
 

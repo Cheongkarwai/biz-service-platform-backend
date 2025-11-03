@@ -20,4 +20,6 @@ public interface CustomerMapper {
 
     @Mapping(target = "emailAddress", source = "accountDetails.email")
     Customer mapToCustomer(CustomerInput customerInput);
+
+
 }

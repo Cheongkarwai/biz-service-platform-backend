@@ -3,6 +3,7 @@ package com.cheong.ecommerce_ai_driven.account.service;
 import com.cheong.ecommerce_ai_driven.account.dto.AccountDTO;
 import com.cheong.ecommerce_ai_driven.account.entity.Account;
 import com.cheong.ecommerce_ai_driven.account.input.AccountInput;
+import com.cheong.ecommerce_ai_driven.user.dto.RecoverPasswordRequest;
 import reactor.core.publisher.Mono;
 
 public interface IAccountService {
@@ -16,4 +17,6 @@ public interface IAccountService {
     Mono<Account> findByCustomerId(String customerId);
     Mono<AccountDTO> save(AccountInput accountInput);
     Mono<Account> save(Account account);
+
+    Mono<Void> recoverPassword(RecoverPasswordRequest recoverPasswordRequest);
 }

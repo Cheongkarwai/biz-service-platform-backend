@@ -1,9 +1,11 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE IF NOT EXISTS service
+CREATE TABLE IF NOT EXISTS speciality
 (
     id   VARCHAR(255) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
+    bucket_name VARCHAR(255) NOT NULL,
+    object_key TEXT NOT NULL,
     version INT NOT NULL DEFAULT 0
 );
 
@@ -28,7 +30,7 @@ CREATE TABLE IF NOT EXISTS business_service
     service_id  VARCHAR(255) NOT NULL,
     UNIQUE (business_id, service_id),
     FOREIGN KEY (business_id) REFERENCES business (id),
-    FOREIGN KEY (service_id) REFERENCES service (id),
+    FOREIGN KEY (service_id) REFERENCES speciality (id),
     version INT NOT NULL DEFAULT 0
 );
 
@@ -40,7 +42,7 @@ CREATE TABLE IF NOT EXISTS review
     service_id VARCHAR(255)        NOT NULL,
     created_at TIMESTAMP    NOT NULL,
     updated_at TIMESTAMP    NOT NULL,
-    FOREIGN KEY (service_id) REFERENCES service (id),
+    FOREIGN KEY (service_id) REFERENCES speciality (id),
     version INT NOT NULL DEFAULT 0
 );
 
@@ -122,4 +124,11 @@ CREATE TABLE IF NOT EXISTS account
     version INT NOT NULL DEFAULT 0,
     FOREIGN KEY (customer_id) REFERENCES customer (id),
     FOREIGN KEY (business_id) REFERENCES business (id)
+);
+
+CREATE TABLE IF NOT EXISTS category
+(
+  id          VARCHAR(255) PRIMARY KEY,
+  name        VARCHAR(100) NOT NULL,
+  version INT NOT NULL DEFAULT 0
 );

@@ -21,6 +21,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -141,5 +143,10 @@ public class CustomerService {
     private Customer applyPatch(Customer targetCustomer, JsonPatch jsonPatch) throws JsonPatchException, JsonProcessingException {
         JsonNode patched = jsonPatch.apply(objectMapper.convertValue(targetCustomer, JsonNode.class));
         return objectMapper.treeToValue(patched, Customer.class);
+    }
+
+    public Mono<CustomerDTO> findByEmail(String email) {
+        return customerRepository.findByEmailAddress(email)
+                .map(customerMapper::mapToCustomerDTO);
     }
 }

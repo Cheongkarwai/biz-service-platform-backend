@@ -1,4 +1,4 @@
-package com.cheong.ecommerce_ai_driven.company.dto;
+package com.cheong.ecommerce_ai_driven.speciality.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ServiceDTO {
-
-    private String id;
+public class CategoryInput {
 
     private String name;
 }

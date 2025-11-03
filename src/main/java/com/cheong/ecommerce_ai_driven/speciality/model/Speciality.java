@@ -1,4 +1,4 @@
-package com.cheong.ecommerce_ai_driven.company.entity;
+package com.cheong.ecommerce_ai_driven.speciality.model;
 
 import com.cheong.ecommerce_ai_driven.common.dto.BaseEntity;
 import lombok.Data;
@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Data
 @Table("service")
-public class Service implements BaseEntity {
+public class Speciality implements BaseEntity {
 
     @Id
     private String id;

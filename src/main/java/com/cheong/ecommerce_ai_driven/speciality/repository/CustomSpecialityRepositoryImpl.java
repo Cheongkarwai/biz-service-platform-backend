@@ -1,7 +1,7 @@
-package com.cheong.ecommerce_ai_driven.company.repository;
+package com.cheong.ecommerce_ai_driven.speciality.repository;
 
 import com.cheong.ecommerce_ai_driven.common.paging.dto.Connection;
-import com.cheong.ecommerce_ai_driven.company.entity.Service;
+import com.cheong.ecommerce_ai_driven.speciality.model.Speciality;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Criteria;
@@ -11,18 +11,18 @@ import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 
 @Repository
-public class CustomServiceRepositoryImpl implements CustomServiceRepository{
+public class CustomSpecialityRepositoryImpl implements CustomSpecialityRepository {
 
     private final R2dbcEntityTemplate r2dbcEntityTemplate;
 
-    public CustomServiceRepositoryImpl(R2dbcEntityTemplate r2dbcEntityTemplate) {
+    public CustomSpecialityRepositoryImpl(R2dbcEntityTemplate r2dbcEntityTemplate) {
         this.r2dbcEntityTemplate = r2dbcEntityTemplate;
     }
 
     @Override
-    public Mono<Connection<Service>> findAll(String after,
-                                             String before,
-                                             int limit) {
+    public Mono<Connection<Speciality>> findAll(String after,
+                                                String before,
+                                                int limit) {
 
         Criteria criteria = Criteria.empty();
 
@@ -40,9 +40,9 @@ public class CustomServiceRepositoryImpl implements CustomServiceRepository{
 
         Query query = Query.query(criteria).sort(sort).limit(limit + 1);
 
-        return r2dbcEntityTemplate.select(query, Service.class)
+        return r2dbcEntityTemplate.select(query, Speciality.class)
                 .collectList()
                 .map(services ->
-                        Connection.createConnection(services, before, limit, service->service.getId().toString()));
+                        Connection.createConnection(services, before, limit, service-> service.getId().toString()));
     }
 }

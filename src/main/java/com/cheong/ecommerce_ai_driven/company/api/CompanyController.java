@@ -4,15 +4,11 @@ import com.cheong.ecommerce_ai_driven.common.paging.dto.Connection;
 import com.cheong.ecommerce_ai_driven.company.dto.AddressDTO;
 import com.cheong.ecommerce_ai_driven.company.dto.BusinessDTO;
 import com.cheong.ecommerce_ai_driven.company.dto.BusinessInput;
-import com.cheong.ecommerce_ai_driven.company.dto.ServiceDTO;
+import com.cheong.ecommerce_ai_driven.speciality.dto.SpecialityDTO;
 import com.cheong.ecommerce_ai_driven.company.service.CompanyService;
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.net.http.HttpHeaders;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/companies")
@@ -42,7 +38,7 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}/services")
-    public Flux<ServiceDTO> findServicesByCompanyId(@PathVariable String id){
+    public Flux<SpecialityDTO> findServicesByCompanyId(@PathVariable String id){
         return companyService.findAllServicesById(id);
     }
 

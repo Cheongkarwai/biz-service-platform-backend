@@ -1,16 +1,18 @@
 package com.cheong.ecommerce_ai_driven.company.service;
 
 import com.cheong.ecommerce_ai_driven.common.paging.dto.Connection;
-import com.cheong.ecommerce_ai_driven.common.service.OutboxEventService;
 import com.cheong.ecommerce_ai_driven.company.dto.AddressDTO;
 import com.cheong.ecommerce_ai_driven.company.dto.BusinessDTO;
 import com.cheong.ecommerce_ai_driven.company.dto.BusinessInput;
-import com.cheong.ecommerce_ai_driven.company.dto.ServiceDTO;
+import com.cheong.ecommerce_ai_driven.speciality.dto.SpecialityDTO;
 import com.cheong.ecommerce_ai_driven.company.entity.*;
 import com.cheong.ecommerce_ai_driven.company.mapper.AddressMapper;
 import com.cheong.ecommerce_ai_driven.company.mapper.CompanyMapper;
 import com.cheong.ecommerce_ai_driven.company.mapper.ServiceMapper;
 import com.cheong.ecommerce_ai_driven.company.repository.*;
+import com.cheong.ecommerce_ai_driven.speciality.dto.SpecialityInput;
+import com.cheong.ecommerce_ai_driven.speciality.model.Speciality;
+import com.cheong.ecommerce_ai_driven.speciality.repository.SpecialityRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,7 @@ public class CompanyService {
 
     private final CompanyMapper companyMapper;
 
-    private final ServiceRepository serviceRepository;
+    private final SpecialityRepository serviceRepository;
 
     private final ServiceMapper serviceMapper;
 
@@ -42,7 +44,7 @@ public class CompanyService {
 
     public CompanyService(CompanyRepository companyRepository,
                           CompanyMapper companyMapper,
-                          ServiceRepository serviceRepository,
+                          SpecialityRepository serviceRepository,
                           ServiceMapper serviceMapper,
                           AddressRepository addressRepository,
                           AddressMapper addressMapper,
@@ -88,21 +90,21 @@ public class CompanyService {
     }
 
     @Transactional(readOnly = true)
-    public Mono<ServiceDTO> findServiceById(String id) {
+    public Mono<SpecialityDTO> findServiceById(String id) {
         return serviceRepository.findById(id)
                 .map(serviceMapper::mapToServiceDTO)
                 .doOnError(error -> log.error("Error occurred while fetching service with id {}", id, error));
     }
 
     @Transactional(readOnly = true)
-    public Mono<Connection<ServiceDTO>> findAllServices(String after, String before, int limit) {
+    public Mono<Connection<SpecialityDTO>> findAllServices(String after, String before, int limit) {
         return serviceRepository.findAll(after, before, limit)
                 .flatMap(serviceConnection -> {
-                    Connection<ServiceDTO> connection = new Connection<>();
+                    Connection<SpecialityDTO> connection = new Connection<>();
                     connection.setPageInfo(serviceConnection.getPageInfo());
                     return Flux.fromIterable(serviceConnection.getEdges())
                             .map(edge -> {
-                                Connection<ServiceDTO>.Edge connectionEdge = connection.new Edge();
+                                Connection<SpecialityDTO>.Edge connectionEdge = connection.new Edge();
                                 connectionEdge.setNode(serviceMapper.mapToServiceDTO(edge.getNode()));
                                 connectionEdge.setCursor(edge.getCursor());
                                 return connectionEdge;
@@ -123,7 +125,7 @@ public class CompanyService {
     }
 
     @Transactional(readOnly = true)
-    public Flux<ServiceDTO> findAllServicesById(String id) {
+    public Flux<SpecialityDTO> findAllServicesById(String id) {
         //return serviceRepository.findAll;
         return Flux.empty();
     }
@@ -133,7 +135,7 @@ public class CompanyService {
         log.info("Creating company in progress.. {}", businessInput);
         Business business = companyMapper.mapToBusiness(businessInput);
         List<Address> addresses = addressMapper.mapToAddresses(businessInput.getAddresses());
-        List<com.cheong.ecommerce_ai_driven.company.entity.Service> services = serviceMapper.mapToServices(businessInput.getServices());
+        List<Speciality> specialities = serviceMapper.mapToServices(businessInput.getServices());
 
         log.info("name {}", business.getName());
         return Mono.just(business)
@@ -153,9 +155,9 @@ public class CompanyService {
                 .then();
     }
 
-    private Flux<BusinessService> saveServices(List<com.cheong.ecommerce_ai_driven.company.entity.Service> services,
+    private Flux<BusinessService> saveServices(List<Speciality> specialities,
                                                String companyId) {
-        Flux<BusinessService> serviceFlux = Flux.fromIterable(services)
+        Flux<BusinessService> serviceFlux = Flux.fromIterable(specialities)
                 .map(service -> new BusinessService(
                         UUID.randomUUID().toString(),
                         new BusinessServiceId(
@@ -177,5 +179,12 @@ public class CompanyService {
                     log.info("Saved company with id {}", companyId);
                 })
                 .flatMap(address -> businessAddressRepository.save(new BusinessAddress(companyId, address.getId())));
+    }
+
+    public Mono<Void> saveSpeciality(SpecialityInput specialityInput) {
+        return Mono.just(specialityInput)
+                .map(serviceMapper::mapToService)
+                .flatMap(serviceRepository::save)
+                .then();
     }
 }

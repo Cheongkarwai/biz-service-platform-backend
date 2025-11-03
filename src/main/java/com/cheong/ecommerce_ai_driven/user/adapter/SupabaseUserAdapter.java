@@ -43,7 +43,7 @@ public class SupabaseUserAdapter implements AuthProvider {
                                 .map(supabaseError -> new BadCredentialsException(supabaseError.getMsg())))
                 .onStatus(
                         HttpStatusCode::is5xxServerError,
-                        clientResponse -> Mono.error(new RuntimeException("Error occurred while signing up"))
+                        clientResponse -> Mono.error(new RuntimeException("Error occurred while logging out"))
                 )
                 .bodyToMono(Void.class);
     }
@@ -56,6 +56,7 @@ public class SupabaseUserAdapter implements AuthProvider {
     @Override
     public Mono<Void> recoverPassword(RecoverPasswordRequest recoverPasswordRequest) {
         return webClient.post().uri("/auth/v1/recover")
+                .bodyValue(recoverPasswordRequest)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError,
                         clientResponse -> clientResponse.bodyToMono(SupabaseError.class)
@@ -63,7 +64,7 @@ public class SupabaseUserAdapter implements AuthProvider {
                 )
                 .onStatus(
                         HttpStatusCode::is5xxServerError,
-                        clientResponse -> Mono.error(new RuntimeException("Error occurred while signing up"))
+                        clientResponse -> Mono.error(new RuntimeException("Error occurred while recovering password"))
                 )
                 .bodyToMono(Void.class);
     }
@@ -78,7 +79,7 @@ public class SupabaseUserAdapter implements AuthProvider {
                 )
                 .onStatus(
                         HttpStatusCode::is5xxServerError,
-                        clientResponse -> Mono.error(new RuntimeException("Error occurred while signing up"))
+                        clientResponse -> Mono.error(new RuntimeException("Error occurred while logging in"))
                 )
                 .bodyToMono(AuthResponse.class);
     }
