@@ -40,6 +40,6 @@ public class CustomCustomerRepositoryImpl implements CustomCustomerRepository{
         return r2dbcEntityTemplate.select(query, Customer.class)
                 .collectList()
                 .map(customers ->
-                        Connection.createConnection(customers, before, limit, Customer::getId));
+                        Connection.createConnection(customers, after, before, limit, Customer::getId));
     }
 }

@@ -42,6 +42,6 @@ public class CustomCategoryRepositoryImpl implements CustomCategoryRepository{
         return r2dbcEntityTemplate.select(query, Category.class)
                 .collectList()
                 .map(services ->
-                        Connection.createConnection(services, before, limit, category-> category.getId().toString()));
+                        Connection.createConnection(services, after, before, limit, category-> category.getId().toString()));
     }
 }

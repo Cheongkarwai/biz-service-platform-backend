@@ -38,7 +38,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository{
 
         return r2dbcEntityTemplate.select(query, Product.class)
                 .collectList()
-                .map(products -> Connection.createConnection(products, before, limit, Product::getId));
+                .map(products -> Connection.createConnection(products, after, before, limit, Product::getId));
     }
 
 }

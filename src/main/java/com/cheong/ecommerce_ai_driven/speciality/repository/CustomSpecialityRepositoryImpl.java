@@ -43,6 +43,6 @@ public class CustomSpecialityRepositoryImpl implements CustomSpecialityRepositor
         return r2dbcEntityTemplate.select(query, Speciality.class)
                 .collectList()
                 .map(services ->
-                        Connection.createConnection(services, before, limit, service-> service.getId().toString()));
+                        Connection.createConnection(services, after, before, limit, service-> service.getId().toString()));
     }
 }
