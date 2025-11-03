@@ -43,7 +43,7 @@ public class CustomCompanyRepositoryImpl implements CustomCompanyRepository{
         return r2dbcEntityTemplate.select(query, Business.class)
                 .collectList()
                 .map(companies ->
-                        Connection.createConnection(companies, before, limit, business -> business.getId().toString()));
+                        Connection.createConnection(companies, after, before, limit, business -> business.getId().toString()));
     }
 
 }

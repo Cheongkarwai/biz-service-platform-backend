@@ -1,5 +1,6 @@
 package com.cheong.ecommerce_ai_driven.company.entity;
 
+import com.cheong.ecommerce_ai_driven.common.dto.BaseEntity;
 import com.cheong.ecommerce_ai_driven.company.dto.AddressType;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -12,7 +13,7 @@ import java.util.UUID;
 
 @Data
 @Table("address")
-public class Address {
+public class Address implements BaseEntity {
 
     @Id
     private String id;

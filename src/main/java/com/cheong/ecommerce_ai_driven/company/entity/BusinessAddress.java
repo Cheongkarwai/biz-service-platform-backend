@@ -21,8 +21,10 @@ import java.util.UUID;
 public class BusinessAddress implements BaseEntity {
 
     @Id
-    @Column("business_id")
     private String id;
+
+    @Column("business_id")
+    private String businessId;
 
     @Column("address_id")
     private String addressId;
@@ -31,7 +33,7 @@ public class BusinessAddress implements BaseEntity {
     private Long version;
 
     public BusinessAddress(String businessId, String addressId) {
-        this.id = businessId;
+        this.businessId = businessId;
         this.addressId = addressId;
     }
 }

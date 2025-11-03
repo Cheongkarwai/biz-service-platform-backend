@@ -35,6 +35,36 @@ public class Connection<T> {
         private boolean hasNextPage;
     }
 
+    public static <T> Connection<T> createConnection(List<T> items, String after, String before, int limit, Function<T, String> idExtractor) {
+
+        Connection<T> connection = new Connection<>();
+        Connection.PageInfo pageInfo = new Connection.PageInfo();
+        List<Connection<T>.Edge> edges = new ArrayList<>();
+
+        boolean hasExtraItems = items.size() > limit;
+        List<T> nodes = hasExtraItems ? items.subList(0, limit) : items;
+
+        nodes.forEach(item -> {
+            Connection<T>.Edge edge = connection.new Edge();
+            edge.setNode(item);
+            edge.setCursor(idExtractor.apply(item));
+            edges.add(edge);
+        });
+
+        if(!edges.isEmpty()) {
+            pageInfo.setStartCursor(edges.getFirst().getCursor());
+            pageInfo.setEndCursor(edges.getLast().getCursor());
+        }
+
+        pageInfo.setHasNextPage(hasExtraItems && !StringUtils.hasText(before));
+        pageInfo.setHasPreviousPage(StringUtils.hasText(after) || (hasExtraItems && StringUtils.hasText(before)));
+
+        connection.setEdges(edges);
+        connection.setPageInfo(pageInfo);
+
+        return connection;
+    }
+
     public static <T> Connection<T> createConnection(List<T> items, String before, int limit, Function<T, String> idExtractor) {
 
         Connection<T> connection = new Connection<>();
