@@ -5,6 +5,7 @@ import com.cheong.ecommerce_ai_driven.speciality.dto.CategoryDTO;
 import com.cheong.ecommerce_ai_driven.speciality.dto.CategoryInput;
 import com.cheong.ecommerce_ai_driven.speciality.model.Category;
 import com.cheong.ecommerce_ai_driven.speciality.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -26,7 +27,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public Mono<Category> create(@RequestBody CategoryInput categoryInput){
+    public Mono<Category> create(@Valid @RequestBody CategoryInput categoryInput){
         return categoryService.save(categoryInput);
     }
 }

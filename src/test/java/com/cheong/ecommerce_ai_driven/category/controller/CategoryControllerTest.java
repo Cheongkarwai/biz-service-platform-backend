@@ -1,21 +1,13 @@
 package com.cheong.ecommerce_ai_driven.category.controller;
 
-import com.cheong.ecommerce_ai_driven.common.converter.JsonPatchHttpMessageConverter;
 import com.cheong.ecommerce_ai_driven.speciality.controller.CategoryController;
+import com.cheong.ecommerce_ai_driven.speciality.dto.CategoryInput;
 import com.cheong.ecommerce_ai_driven.speciality.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -50,6 +42,24 @@ public class CategoryControllerTest {
                 .uri("/api/v1/categories")
                 .exchange()
                 .expectStatus().isBadRequest();
+    }
+
+    @Test
+    void givenCategoryInputWithNoName_whenCreateCategory_shouldReturnBadRequest(){
+        webTestClient.post()
+                .uri("/api/v1/categories")
+                .bodyValue(new CategoryInput())
+                .exchange()
+                .expectStatus().isBadRequest();
+    }
+
+    @Test
+    void givenCategoryInputWithName_whenCreateCategory_shouldReturnBadRequest(){
+        webTestClient.post()
+                .uri("/api/v1/categories")
+                .bodyValue(new CategoryInput("Test"))
+                .exchange()
+                .expectStatus().isOk();
     }
 
 }
