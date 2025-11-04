@@ -1,11 +1,15 @@
 package com.cheong.ecommerce_ai_driven.company.api;
 
 import com.cheong.ecommerce_ai_driven.common.data.Connection;
+import com.cheong.ecommerce_ai_driven.common.web.AdvanceValidation;
+import com.cheong.ecommerce_ai_driven.common.web.BasicValidation;
 import com.cheong.ecommerce_ai_driven.company.dto.AddressDTO;
 import com.cheong.ecommerce_ai_driven.company.dto.BusinessDTO;
 import com.cheong.ecommerce_ai_driven.company.dto.BusinessInput;
 import com.cheong.ecommerce_ai_driven.speciality.dto.SpecialityDTO;
 import com.cheong.ecommerce_ai_driven.company.service.CompanyService;
+import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -43,7 +47,7 @@ public class CompanyController {
     }
 
     @PostMapping
-    public Mono<Void> create(@RequestBody BusinessInput businessInput){
+    public Mono<Void> create(@Validated(value = {BasicValidation.class, AdvanceValidation.class}) @RequestBody BusinessInput businessInput){
         return companyService.create(businessInput);
     }
 
