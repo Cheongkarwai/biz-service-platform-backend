@@ -4,6 +4,7 @@ import com.cheong.ecommerce_ai_driven.speciality.controller.CategoryController;
 import com.cheong.ecommerce_ai_driven.speciality.dto.CategoryInput;
 import com.cheong.ecommerce_ai_driven.speciality.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -28,6 +29,7 @@ public class CategoryControllerTest {
 
 
     @Test
+    @DisplayName("When request parameter limit is being supplied, when call find all categories API, it should return ok")
     void givenRequiredRequestParameterLimit_whenFindAllCategories_shouldReturnOk() {
         webTestClient.get()
                 .uri("/api/v1/categories?limit={limit}",
@@ -37,6 +39,7 @@ public class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("When no request parameter limit is being supplied, when call find all categories API, it should return bad request")
     void givenNoRequestParameter_whenFindAllCategories_shouldReturnBadRequest(){
         webTestClient.get()
                 .uri("/api/v1/categories")
@@ -45,6 +48,7 @@ public class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("When category name is not being supplied, when call create categories API, it should return bad request")
     void givenCategoryInputWithNoName_whenCreateCategory_shouldReturnBadRequest(){
         webTestClient.post()
                 .uri("/api/v1/categories")
@@ -54,7 +58,8 @@ public class CategoryControllerTest {
     }
 
     @Test
-    void givenCategoryInputWithName_whenCreateCategory_shouldReturnBadRequest(){
+    @DisplayName("When category name being supplied, when call create categories API, it should return ok")
+    void givenCategoryInputWithName_whenCreateCategory_shouldReturnOk(){
         webTestClient.post()
                 .uri("/api/v1/categories")
                 .bodyValue(new CategoryInput("Test"))

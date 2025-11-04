@@ -5,6 +5,7 @@ import com.cheong.ecommerce_ai_driven.speciality.dto.SpecialityInput;
 import com.cheong.ecommerce_ai_driven.speciality.dto.SpecialityDTO;
 import com.cheong.ecommerce_ai_driven.company.service.CompanyService;
 import com.cheong.ecommerce_ai_driven.speciality.service.SpecialityService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -32,7 +33,7 @@ public class SpecialityController {
     }
 
     @PostMapping
-    public Mono<Void> create(@RequestBody SpecialityInput specialityInput){
+    public Mono<Void> create(@Valid @RequestBody SpecialityInput specialityInput){
         return specialityService.save(specialityInput);
     }
 }
