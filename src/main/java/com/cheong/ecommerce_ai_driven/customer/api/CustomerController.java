@@ -1,6 +1,6 @@
 package com.cheong.ecommerce_ai_driven.customer.api;
 
-import com.cheong.ecommerce_ai_driven.common.OrderedValidation;
+import com.cheong.ecommerce_ai_driven.common.web.OrderedValidation;
 import com.cheong.ecommerce_ai_driven.customer.dto.CustomerDTO;
 import com.cheong.ecommerce_ai_driven.customer.input.CustomerInput;
 import com.cheong.ecommerce_ai_driven.customer.service.CustomerService;

@@ -121,6 +121,21 @@
             <version>4.1.111.Final</version> <!-- match your Netty version -->
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-resolver-dns-native-macos</artifactId>
+            <classifier>osx-aarch_64</classifier> <!-- For Apple Silicon (M1/M2/M3) -->
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>

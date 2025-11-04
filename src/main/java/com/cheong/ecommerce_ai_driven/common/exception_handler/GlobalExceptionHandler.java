@@ -1,7 +1,7 @@
-package com.cheong.ecommerce_ai_driven.common.exceptionhandler;
+package com.cheong.ecommerce_ai_driven.common.exception_handler;
 
 import com.cheong.ecommerce_ai_driven.account.exception.AccountStateInvalidException;
-import com.cheong.ecommerce_ai_driven.common.dto.ValidationException;
+import com.cheong.ecommerce_ai_driven.common.web.ValidationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpEntity;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
-import org.springframework.web.server.ServerWebInputException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

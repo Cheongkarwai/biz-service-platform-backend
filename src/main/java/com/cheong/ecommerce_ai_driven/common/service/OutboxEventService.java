@@ -1,7 +1,7 @@
 package com.cheong.ecommerce_ai_driven.common.service;
 
-import com.cheong.ecommerce_ai_driven.common.dto.OutboxEvent;
-import com.cheong.ecommerce_ai_driven.common.repository.OutboxEventRepository;
+import com.cheong.ecommerce_ai_driven.common.web.OutboxEvent;
+import com.cheong.ecommerce_ai_driven.common.data.OutboxEventRepository;
 import com.cheong.ecommerce_ai_driven.company.entity.Business;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;

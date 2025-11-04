@@ -2,11 +2,11 @@ package com.cheong.ecommerce_ai_driven.customer.service;
 
 import com.cheong.ecommerce_ai_driven.account.dto.AccountStatus;
 import com.cheong.ecommerce_ai_driven.account.dto.AccountType;
-import com.cheong.ecommerce_ai_driven.account.exception.AuthAccountNotFoundException;
 import com.cheong.ecommerce_ai_driven.account.exception.CustomerNotFoundException;
 import com.cheong.ecommerce_ai_driven.account.input.AccountInput;
 import com.cheong.ecommerce_ai_driven.account.service.IAccountService;
-import com.cheong.ecommerce_ai_driven.common.paging.dto.Connection;
+import com.cheong.ecommerce_ai_driven.common.data.Connection;
+import com.cheong.ecommerce_ai_driven.common.util.ConnectionUtil;
 import com.cheong.ecommerce_ai_driven.common.util.RetryUtil;
 import com.cheong.ecommerce_ai_driven.customer.dto.CustomerDTO;
 import com.cheong.ecommerce_ai_driven.customer.entity.Customer;
@@ -15,22 +15,16 @@ import com.cheong.ecommerce_ai_driven.customer.mapper.CustomerMapper;
 import com.cheong.ecommerce_ai_driven.customer.repository.CustomerRepository;
 import com.cheong.ecommerce_ai_driven.customer.validation.ValidationService;
 import com.cheong.ecommerce_ai_driven.user.adapter.AuthProvider;
-import com.cheong.ecommerce_ai_driven.user.mapper.UserMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
-
-import javax.security.auth.login.AccountNotFoundException;
 
 @Service
 @Slf4j
@@ -50,16 +44,13 @@ public class CustomerService {
 
     private final AuthProvider authProvider;
 
-    private final UserMapper userMapper;
-
     public CustomerService(CustomerRepository customerRepository,
                            CustomerMapper customerMapper,
                            IAccountService accountService,
                            ValidationService validationService,
                            RetryUtil retryUtil,
                            ObjectMapper objectMapper,
-                           AuthProvider authProvider,
-                           UserMapper userMapper
+                           AuthProvider authProvider
     ) {
         this.customerRepository = customerRepository;
         this.customerMapper = customerMapper;
@@ -68,7 +59,6 @@ public class CustomerService {
         this.retryUtil = retryUtil;
         this.objectMapper = objectMapper;
         this.authProvider = authProvider;
-        this.userMapper = userMapper;
     }
 
     public Mono<CustomerDTO> findById(String id) {
@@ -81,22 +71,7 @@ public class CustomerService {
 
     public Mono<Connection<CustomerDTO>> findAll(String after, String before, int limit) {
         return customerRepository.findAll(after, before, limit)
-                .flatMap(serviceConnection -> {
-                    Connection<CustomerDTO> connection = new Connection<>();
-                    connection.setPageInfo(serviceConnection.getPageInfo());
-                    return Flux.fromIterable(serviceConnection.getEdges())
-                            .map(edge -> {
-                                Connection<CustomerDTO>.Edge connectionEdge = connection.new Edge();
-                                connectionEdge.setNode(customerMapper.mapToCustomerDTO(edge.getNode()));
-                                connectionEdge.setCursor(edge.getCursor());
-                                return connectionEdge;
-                            })
-                            .collectList()
-                            .map(edges -> {
-                                connection.setEdges(edges);
-                                return connection;
-                            });
-                }).doOnError(error -> log.error("Error occurred while fetching services", error));
+                .flatMap(serviceConnection -> ConnectionUtil.mapConnection(serviceConnection, customerMapper::mapToCustomerDTO)).doOnError(error -> log.error("Error occurred while fetching services", error));
     }
 
     @Transactional

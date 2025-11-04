@@ -1,4 +1,4 @@
-package com.cheong.ecommerce_ai_driven.common.dto;
+package com.cheong.ecommerce_ai_driven.common.web;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

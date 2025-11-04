@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SpecialityInput {
 
-    @NotBlank(message = "{constraints.service-name.required.error}")
+    @NotBlank(message = "{constraints.speciality-name.required.error}")
     private String name;
 }

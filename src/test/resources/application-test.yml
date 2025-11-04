@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: tier-loyalty
+    retry:
+      max-attempts: 10
+      min-backoff: 2s
+      retryable-exceptions:
+        - io.r2dbc.spi.R2dbcTransientResourceException
+  r2dbc:
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    url: ${DATABASE_URL}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${JWK_SET_URL}
+logging:
+  level:
+    org.springframework:
+      web: DEBUG
+      security: DEBUG
+
+#  kafka:
+#    consumer:
+#      auto-offset-reset: earliest
+#      group-id: tier-loyalty
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer:  org.springframework.kafka.support.serializer.JsonDeserializer
+#      properties:
+#        spring.json.trusted.packages: "*"
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#    bootstrap-servers: ${KAFKA_URL}
+supabase:
+  api-key: ${SUPABASE_API_KEY}
+  base-url: ${SUPABASE_URL}

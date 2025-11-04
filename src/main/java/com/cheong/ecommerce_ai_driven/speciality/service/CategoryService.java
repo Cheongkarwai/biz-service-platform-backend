@@ -1,15 +1,13 @@
 package com.cheong.ecommerce_ai_driven.speciality.service;
 
-import com.cheong.ecommerce_ai_driven.common.paging.dto.Connection;
+import com.cheong.ecommerce_ai_driven.common.data.Connection;
 import com.cheong.ecommerce_ai_driven.common.util.ConnectionUtil;
-import com.cheong.ecommerce_ai_driven.company.dto.BusinessDTO;
 import com.cheong.ecommerce_ai_driven.speciality.dto.CategoryDTO;
 import com.cheong.ecommerce_ai_driven.speciality.dto.CategoryInput;
 import com.cheong.ecommerce_ai_driven.speciality.model.Category;
 import com.cheong.ecommerce_ai_driven.speciality.model.CategoryMapper;
 import com.cheong.ecommerce_ai_driven.speciality.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service

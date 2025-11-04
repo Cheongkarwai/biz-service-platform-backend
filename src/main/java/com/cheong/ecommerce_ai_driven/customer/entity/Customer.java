@@ -1,20 +1,17 @@
 package com.cheong.ecommerce_ai_driven.customer.entity;
 
-import com.cheong.ecommerce_ai_driven.common.dto.BaseEntity;
+import com.cheong.ecommerce_ai_driven.common.data.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
-import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.UUID;
 
 @Data
 @Builder

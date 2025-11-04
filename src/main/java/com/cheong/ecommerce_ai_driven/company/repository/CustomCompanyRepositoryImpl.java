@@ -1,7 +1,7 @@
 package com.cheong.ecommerce_ai_driven.company.repository;
 
-import com.cheong.ecommerce_ai_driven.common.paging.dto.Connection;
-import com.cheong.ecommerce_ai_driven.common.repository.CursorPaginationRepository;
+import com.cheong.ecommerce_ai_driven.common.data.Connection;
+import com.cheong.ecommerce_ai_driven.common.data.CursorPaginationRepository;
 import com.cheong.ecommerce_ai_driven.company.entity.Business;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Repository;

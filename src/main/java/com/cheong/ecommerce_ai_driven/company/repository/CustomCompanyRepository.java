@@ -1,6 +1,6 @@
 package com.cheong.ecommerce_ai_driven.company.repository;
 
-import com.cheong.ecommerce_ai_driven.common.paging.dto.Connection;
+import com.cheong.ecommerce_ai_driven.common.data.Connection;
 import com.cheong.ecommerce_ai_driven.company.entity.Business;
 import reactor.core.publisher.Mono;
 

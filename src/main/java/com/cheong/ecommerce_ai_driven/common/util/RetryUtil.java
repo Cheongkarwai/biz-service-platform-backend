@@ -1,7 +1,6 @@
 package com.cheong.ecommerce_ai_driven.common.util;
 
-import com.cheong.ecommerce_ai_driven.common.RetryProperties;
-import io.r2dbc.spi.R2dbcTransientResourceException;
+import com.cheong.ecommerce_ai_driven.common.properties.RetryProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import reactor.util.retry.Retry;

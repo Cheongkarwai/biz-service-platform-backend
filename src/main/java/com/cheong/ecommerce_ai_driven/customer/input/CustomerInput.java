@@ -1,7 +1,7 @@
 package com.cheong.ecommerce_ai_driven.customer.input;
 
-import com.cheong.ecommerce_ai_driven.common.AdvanceValidation;
-import com.cheong.ecommerce_ai_driven.common.BasicValidation;
+import com.cheong.ecommerce_ai_driven.common.web.AdvanceValidation;
+import com.cheong.ecommerce_ai_driven.common.web.BasicValidation;
 import com.cheong.ecommerce_ai_driven.customer.validation.MinAge;
 import com.cheong.ecommerce_ai_driven.user.dto.UserInput;
 import jakarta.validation.Valid;

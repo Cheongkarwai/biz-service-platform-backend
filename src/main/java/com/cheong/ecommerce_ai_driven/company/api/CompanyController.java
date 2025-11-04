@@ -1,6 +1,6 @@
 package com.cheong.ecommerce_ai_driven.company.api;
 
-import com.cheong.ecommerce_ai_driven.common.paging.dto.Connection;
+import com.cheong.ecommerce_ai_driven.common.data.Connection;
 import com.cheong.ecommerce_ai_driven.company.dto.AddressDTO;
 import com.cheong.ecommerce_ai_driven.company.dto.BusinessDTO;
 import com.cheong.ecommerce_ai_driven.company.dto.BusinessInput;

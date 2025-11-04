@@ -1,6 +1,5 @@
-package com.cheong.ecommerce_ai_driven.common.dto;
+package com.cheong.ecommerce_ai_driven.common.web;
 
-import lombok.Data;
 import lombok.Getter;
 
 @Getter

@@ -1,6 +1,6 @@
 package com.cheong.ecommerce_ai_driven.speciality.model;
 
-import com.cheong.ecommerce_ai_driven.common.dto.BaseEntity;
+import com.cheong.ecommerce_ai_driven.common.data.BaseEntity;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;

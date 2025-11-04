@@ -1,15 +1,9 @@
 package com.cheong.ecommerce_ai_driven.customer.validation;
 
-import com.cheong.ecommerce_ai_driven.common.dto.ValidationError;
-import com.cheong.ecommerce_ai_driven.common.dto.ValidationException;
+import com.cheong.ecommerce_ai_driven.common.web.ValidationError;
 import com.cheong.ecommerce_ai_driven.customer.repository.CustomerRepository;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
-
-import java.util.function.BiFunction;
 
 @Service
 public class ValidationService {

@@ -1,9 +1,8 @@
-package com.cheong.ecommerce_ai_driven.common;
+package com.cheong.ecommerce_ai_driven.common.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.convert.DurationUnit;
-import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;

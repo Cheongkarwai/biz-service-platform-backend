@@ -1,6 +1,7 @@
 package com.cheong.ecommerce_ai_driven.company.service;
 
-import com.cheong.ecommerce_ai_driven.common.paging.dto.Connection;
+import com.cheong.ecommerce_ai_driven.common.data.Connection;
+import com.cheong.ecommerce_ai_driven.common.util.ConnectionUtil;
 import com.cheong.ecommerce_ai_driven.company.dto.AddressDTO;
 import com.cheong.ecommerce_ai_driven.company.dto.BusinessDTO;
 import com.cheong.ecommerce_ai_driven.company.dto.BusinessInput;
@@ -13,6 +14,7 @@ import com.cheong.ecommerce_ai_driven.company.repository.*;
 import com.cheong.ecommerce_ai_driven.speciality.dto.SpecialityInput;
 import com.cheong.ecommerce_ai_driven.speciality.model.Speciality;
 import com.cheong.ecommerce_ai_driven.speciality.repository.SpecialityRepository;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,22 +65,7 @@ public class CompanyService {
     @Transactional(readOnly = true)
     public Mono<Connection<BusinessDTO>> findAll(String after, String before, int limit) {
         return companyRepository.findAll(after, before, limit)
-                .flatMap(companyConnection -> {
-                    Connection<BusinessDTO> connection = new Connection<>();
-                    connection.setPageInfo(companyConnection.getPageInfo());
-                    return Flux.fromIterable(companyConnection.getEdges())
-                            .map(edge -> {
-                                Connection<BusinessDTO>.Edge connectionEdge = connection.new Edge();
-                                connectionEdge.setNode(companyMapper.mapToCompanyDTO(edge.getNode()));
-                                connectionEdge.setCursor(edge.getCursor());
-                                return connectionEdge;
-                            })
-                            .collectList()
-                            .map(edges -> {
-                                connection.setEdges(edges);
-                                return connection;
-                            });
-                })
+                .flatMap(companyConnection -> ConnectionUtil.mapConnection(companyConnection, companyMapper::mapToCompanyDTO))
                 .doOnError(error -> log.error("Error occurred while fetching companies", error));
     }
 
@@ -87,34 +74,6 @@ public class CompanyService {
         return companyRepository.findById(id)
                 .map(companyMapper::mapToCompanyDTO)
                 .doOnError(error -> log.error("Error occurred while fetching company with id {}", id, error));
-    }
-
-    @Transactional(readOnly = true)
-    public Mono<SpecialityDTO> findServiceById(String id) {
-        return serviceRepository.findById(id)
-                .map(serviceMapper::mapToServiceDTO)
-                .doOnError(error -> log.error("Error occurred while fetching service with id {}", id, error));
-    }
-
-    @Transactional(readOnly = true)
-    public Mono<Connection<SpecialityDTO>> findAllServices(String after, String before, int limit) {
-        return serviceRepository.findAll(after, before, limit)
-                .flatMap(serviceConnection -> {
-                    Connection<SpecialityDTO> connection = new Connection<>();
-                    connection.setPageInfo(serviceConnection.getPageInfo());
-                    return Flux.fromIterable(serviceConnection.getEdges())
-                            .map(edge -> {
-                                Connection<SpecialityDTO>.Edge connectionEdge = connection.new Edge();
-                                connectionEdge.setNode(serviceMapper.mapToServiceDTO(edge.getNode()));
-                                connectionEdge.setCursor(edge.getCursor());
-                                return connectionEdge;
-                            })
-                            .collectList()
-                            .map(edges -> {
-                                connection.setEdges(edges);
-                                return connection;
-                            });
-                }).doOnError(error -> log.error("Error occurred while fetching services", error));
     }
 
     @Transactional(readOnly = true)
@@ -148,10 +107,7 @@ public class CompanyService {
                                                     savedCompany.getId()));
                         })
                         )
-                .doOnError(throwable -> {
-                    throwable.printStackTrace();
-                    log.error("Error occurred while saving company {}", businessInput, throwable);
-                })
+                .doOnError(throwable -> log.error("Error occurred while saving company {}", businessInput, throwable))
                 .then();
     }
 
@@ -168,23 +124,13 @@ public class CompanyService {
         return companyServiceRepository.saveAll(serviceFlux);
     }
 
-    private Flux<BusinessAddress> saveAddresses(List<Address> addresses,
+    private Flux<BusinessAddress> saveAddresses(@NonNull List<Address> addresses,
                                                 String companyId) {
         Flux<Address> addressFlux = Flux.fromIterable(addresses)
                 .map(address -> address);
 
         return addressRepository.saveAll(addressFlux)
-                .doOnNext(address -> {
-                    log.info("Saved address with id {}", address.getId());
-                    log.info("Saved company with id {}", companyId);
-                })
                 .flatMap(address -> businessAddressRepository.save(new BusinessAddress(companyId, address.getId())));
     }
 
-    public Mono<Void> saveSpeciality(SpecialityInput specialityInput) {
-        return Mono.just(specialityInput)
-                .map(serviceMapper::mapToService)
-                .flatMap(serviceRepository::save)
-                .then();
-    }
 }

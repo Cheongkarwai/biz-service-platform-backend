@@ -1,4 +1,4 @@
-package com.cheong.ecommerce_ai_driven.specification;
+package com.cheong.ecommerce_ai_driven.common.specification;
 
 public interface Specification <T>{
 

@@ -1,6 +1,6 @@
 package com.cheong.ecommerce_ai_driven.common.util;
 
-import com.cheong.ecommerce_ai_driven.common.paging.dto.Connection;
+import com.cheong.ecommerce_ai_driven.common.data.Connection;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

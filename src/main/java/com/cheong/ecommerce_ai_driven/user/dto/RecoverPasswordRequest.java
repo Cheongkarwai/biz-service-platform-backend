@@ -1,7 +1,7 @@
 package com.cheong.ecommerce_ai_driven.user.dto;
 
-import com.cheong.ecommerce_ai_driven.common.AdvanceValidation;
-import com.cheong.ecommerce_ai_driven.common.BasicValidation;
+import com.cheong.ecommerce_ai_driven.common.web.AdvanceValidation;
+import com.cheong.ecommerce_ai_driven.common.web.BasicValidation;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
