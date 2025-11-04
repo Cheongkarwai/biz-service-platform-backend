@@ -1,45 +1,28 @@
 package com.cheong.ecommerce_ai_driven.customer.repository;
 
 import com.cheong.ecommerce_ai_driven.common.paging.dto.Connection;
+import com.cheong.ecommerce_ai_driven.common.repository.CursorPaginationRepository;
 import com.cheong.ecommerce_ai_driven.customer.entity.Customer;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
-import org.springframework.data.relational.core.query.Criteria;
-import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 
 @Repository
-public class CustomCustomerRepositoryImpl implements CustomCustomerRepository{
+public class CustomCustomerRepositoryImpl implements CustomCustomerRepository, CursorPaginationRepository<Customer> {
 
     private final R2dbcEntityTemplate r2dbcEntityTemplate;
 
     public CustomCustomerRepositoryImpl(R2dbcEntityTemplate r2dbcEntityTemplate) {
         this.r2dbcEntityTemplate = r2dbcEntityTemplate;
     }
+
+    @Override
+    public R2dbcEntityTemplate getR2dbcEntityTemplate() {
+        return r2dbcEntityTemplate;
+    }
+
     @Override
     public Mono<Connection<Customer>> findAll(String after, String before, int limit) {
-
-        Criteria criteria = Criteria.empty();
-
-        if(StringUtils.hasText(after)){
-            criteria = criteria.and("id").greaterThan(after);
-        }
-
-        if(StringUtils.hasText(before)){
-            criteria = criteria.and("id").lessThan(before);
-        }
-
-        Sort sort = StringUtils.hasText(before) ?
-                Sort.by(Sort.Order.desc("id")) :
-                Sort.by(Sort.Order.asc("id"));
-
-        Query query = Query.query(criteria).sort(sort).limit(limit + 1);
-
-        return r2dbcEntityTemplate.select(query, Customer.class)
-                .collectList()
-                .map(customers ->
-                        Connection.createConnection(customers, after, before, limit, Customer::getId));
+        return findAll(after, before, limit, "id", Customer.class, Customer::getId);
     }
 }
