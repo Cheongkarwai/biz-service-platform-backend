@@ -5,13 +5,16 @@ import com.cheong.ecommerce_ai_driven.common.util.ConnectionUtil;
 import com.cheong.ecommerce_ai_driven.company.dto.AddressDTO;
 import com.cheong.ecommerce_ai_driven.company.dto.BusinessDTO;
 import com.cheong.ecommerce_ai_driven.company.dto.BusinessInput;
-import com.cheong.ecommerce_ai_driven.speciality.dto.SpecialityDTO;
 import com.cheong.ecommerce_ai_driven.company.entity.*;
 import com.cheong.ecommerce_ai_driven.company.mapper.AddressMapper;
 import com.cheong.ecommerce_ai_driven.company.mapper.CompanyMapper;
 import com.cheong.ecommerce_ai_driven.company.mapper.ServiceMapper;
-import com.cheong.ecommerce_ai_driven.company.repository.*;
-import com.cheong.ecommerce_ai_driven.speciality.dto.SpecialityInput;
+import com.cheong.ecommerce_ai_driven.company.repository.AddressRepository;
+import com.cheong.ecommerce_ai_driven.company.repository.BusinessAddressRepository;
+import com.cheong.ecommerce_ai_driven.company.repository.CompanyRepository;
+import com.cheong.ecommerce_ai_driven.company.repository.CompanyServiceRepository;
+import com.cheong.ecommerce_ai_driven.customer.validation.ValidationService;
+import com.cheong.ecommerce_ai_driven.speciality.dto.SpecialityDTO;
 import com.cheong.ecommerce_ai_driven.speciality.model.Speciality;
 import com.cheong.ecommerce_ai_driven.speciality.repository.SpecialityRepository;
 import lombok.NonNull;
@@ -32,8 +35,6 @@ public class CompanyService {
 
     private final CompanyMapper companyMapper;
 
-    private final SpecialityRepository serviceRepository;
-
     private final ServiceMapper serviceMapper;
 
     private final AddressRepository addressRepository;
@@ -44,22 +45,24 @@ public class CompanyService {
 
     private final BusinessAddressRepository businessAddressRepository;
 
+    private final ValidationService validationService;
+
     public CompanyService(CompanyRepository companyRepository,
                           CompanyMapper companyMapper,
-                          SpecialityRepository serviceRepository,
                           ServiceMapper serviceMapper,
                           AddressRepository addressRepository,
                           AddressMapper addressMapper,
                           CompanyServiceRepository companyServiceRepository,
-                          BusinessAddressRepository businessAddressRepository) {
+                          BusinessAddressRepository businessAddressRepository,
+                          ValidationService validationService) {
         this.companyRepository = companyRepository;
         this.companyMapper = companyMapper;
-        this.serviceRepository = serviceRepository;
         this.serviceMapper = serviceMapper;
         this.addressRepository = addressRepository;
         this.addressMapper = addressMapper;
         this.companyServiceRepository = companyServiceRepository;
         this.businessAddressRepository = businessAddressRepository;
+        this.validationService = validationService;
     }
 
     @Transactional(readOnly = true)
@@ -91,21 +94,18 @@ public class CompanyService {
 
     @Transactional
     public Mono<Void> create(BusinessInput businessInput) {
-        log.info("Creating company in progress.. {}", businessInput);
         Business business = companyMapper.mapToBusiness(businessInput);
         List<Address> addresses = addressMapper.mapToAddresses(businessInput.getAddresses());
         List<Speciality> specialities = serviceMapper.mapToServices(businessInput.getServices());
 
-        log.info("name {}", business.getName());
-        return Mono.just(business)
+        return validationService.validateEmail(business.getEmail())
+                .filter(isValid-> isValid)
+                .map(isValid-> business)
                 .flatMapMany(company-> companyRepository.save(company)
-                        .flatMapMany(savedCompany -> {
-                            log.info("Saved company with id {}", savedCompany.getId());
-                            return saveAddresses(addresses, savedCompany.getId())
-                                    .doOnNext(tuple ->
-                                            log.info("Saved addresses and services for company with id {}",
-                                                    savedCompany.getId()));
-                        })
+                        .flatMapMany(savedCompany -> saveAddresses(addresses, savedCompany.getId())
+                                .doOnNext(tuple ->
+                                        log.info("Saved addresses and services for company with id {}",
+                                                savedCompany.getId())))
                         )
                 .doOnError(throwable -> log.error("Error occurred while saving company {}", businessInput, throwable))
                 .then();
