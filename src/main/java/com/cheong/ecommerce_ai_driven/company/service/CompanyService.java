@@ -111,18 +111,6 @@ public class CompanyService {
                 .then();
     }
 
-    private Flux<BusinessService> saveServices(List<Speciality> specialities,
-                                               String companyId) {
-        Flux<BusinessService> serviceFlux = Flux.fromIterable(specialities)
-                .map(service -> new BusinessService(
-                        UUID.randomUUID().toString(),
-                        new BusinessServiceId(
-                                companyId,
-                                service.getId())
-                ));
-
-        return companyServiceRepository.saveAll(serviceFlux);
-    }
 
     private Flux<BusinessAddress> saveAddresses(@NonNull List<Address> addresses,
                                                 String companyId) {

@@ -61,6 +61,7 @@ public class CustomerService {
         this.authProvider = authProvider;
     }
 
+    @Transactional(readOnly = true)
     public Mono<CustomerDTO> findById(String id) {
         return customerRepository.findById(id)
                 .switchIfEmpty(Mono.defer(()-> Mono.error(new CustomerNotFoundException("Customer not found"))))
@@ -69,6 +70,7 @@ public class CustomerService {
                         .map(userDTO -> customerMapper.mapToCustomerDTO(tuple.getT1(), tuple.getT2(), userDTO)));
     }
 
+    @Transactional(readOnly = true)
     public Mono<Connection<CustomerDTO>> findAll(String after, String before, int limit) {
         return customerRepository.findAll(after, before, limit)
                 .flatMap(serviceConnection -> ConnectionUtil.mapConnection(serviceConnection, customerMapper::mapToCustomerDTO)).doOnError(error -> log.error("Error occurred while fetching services", error));
@@ -120,6 +122,7 @@ public class CustomerService {
         return objectMapper.treeToValue(patched, Customer.class);
     }
 
+    @Transactional(readOnly = true)
     public Mono<CustomerDTO> findByEmail(String email) {
         return customerRepository.findByEmailAddress(email)
                 .map(customerMapper::mapToCustomerDTO);

@@ -8,6 +8,7 @@ import com.cheong.ecommerce_ai_driven.speciality.model.Category;
 import com.cheong.ecommerce_ai_driven.speciality.model.CategoryMapper;
 import com.cheong.ecommerce_ai_driven.speciality.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -23,6 +24,12 @@ public class CategoryService {
         this.categoryMapper = categoryMapper;
     }
 
+    public Mono<CategoryDTO> findById(String id){
+        return categoryRepository.findById(id)
+                .map(categoryMapper::mapToCategoryDTO);
+    }
+
+    @Transactional(readOnly = true)
     public Mono<Connection<CategoryDTO>> findAll(String after, String before, int limit) {
         return categoryRepository.findAll(after, before, limit)
                 .flatMap(categoryConnection ->

@@ -19,6 +19,11 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    @GetMapping("/{id}")
+    public Mono<CategoryDTO> findById(@PathVariable String id){
+        return categoryService.findById(id);
+    }
+
     @GetMapping
     public Mono<Connection<CategoryDTO>> getAll(@RequestParam int limit,
                                                 @RequestParam(required = false) String before,

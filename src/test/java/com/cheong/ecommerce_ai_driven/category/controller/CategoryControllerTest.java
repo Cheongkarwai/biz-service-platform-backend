@@ -32,6 +32,14 @@ public class CategoryControllerTest {
                 WebTestClient.bindToController(new CategoryController(categoryService)).build();
     }
 
+    @Test
+    @DisplayName("When id given, when call find category by id API, it should return ok")
+    void givenId_whenFindCategoryById_shouldReturnOk() {
+        webTestClient.get()
+                .uri("/api/v1/categories/1")
+                .exchange()
+                .expectStatus().isOk();
+    }
 
     @Test
     @DisplayName("When request parameter limit is being supplied, when call find all categories API, it should return ok")
