@@ -1,5 +1,6 @@
 package com.cheong.ecommerce_ai_driven.common.web;
 
+import com.cheong.ecommerce_ai_driven.webhook.dto.EventType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +28,7 @@ public class OutboxEvent {
     private String aggregateType;
 
     @Column("event_type")
-    private String eventType;
+    private EventType eventType;
 
     private String payload;
 
