@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/specialities")
 public class SpecialityController {
@@ -27,9 +29,10 @@ public class SpecialityController {
     @GetMapping
     public Mono<Connection<SpecialityDTO>> findAll(@RequestParam(required = false) String after,
                                                    @RequestParam(required = false) String before,
-                                                   @RequestParam int limit){
+                                                   @RequestParam int limit,
+                                                   @RequestParam(required = false) List<String> categoryIds){
 
-        return specialityService.findAll(after, before, limit);
+        return specialityService.findAll(after, before, limit, categoryIds);
     }
 
     @PostMapping

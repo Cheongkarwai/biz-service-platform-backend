@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.cheong</groupId>
-    <artifactId>e-commerce-ai-driven</artifactId>
+    <artifactId>biz-service-platform</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>tier-loyalty</name>
-    <description>tier-loyalty</description>
+    <name>biz-service-platform</name>
+    <description>biz-service-platform</description>
     <url/>
     <licenses>
         <license/>

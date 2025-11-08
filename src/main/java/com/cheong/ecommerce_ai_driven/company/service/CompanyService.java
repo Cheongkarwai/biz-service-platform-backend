@@ -66,8 +66,8 @@ public class CompanyService {
     }
 
     @Transactional(readOnly = true)
-    public Mono<Connection<BusinessDTO>> findAll(String after, String before, int limit) {
-        return companyRepository.findAll(after, before, limit)
+    public Mono<Connection<BusinessDTO>> findAll(String after, String before, int limit, List<String> serviceIds) {
+        return companyRepository.findAll(after, before, limit, serviceIds)
                 .flatMap(companyConnection -> ConnectionUtil.mapConnection(companyConnection, companyMapper::mapToCompanyDTO))
                 .doOnError(error -> log.error("Error occurred while fetching companies", error));
     }

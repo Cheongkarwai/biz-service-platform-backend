@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/companies")
 public class CompanyController {
@@ -32,8 +34,9 @@ public class CompanyController {
     @GetMapping
     public @ResponseBody Mono<Connection<BusinessDTO>> findAll(@RequestParam(required = false) String after,
                                                  @RequestParam(required = false) String before,
-                                                 @RequestParam int limit) {
-        return companyService.findAll(after, before, limit);
+                                                 @RequestParam int limit,
+                                                 @RequestParam(required = false) List<String> serviceIds) {
+        return companyService.findAll(after, before, limit, serviceIds);
     }
 
     @GetMapping("/{id}/addresses")

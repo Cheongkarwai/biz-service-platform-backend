@@ -17,11 +17,11 @@ public interface CursorPaginationRepository<T> {
             String after,
             String before,
             int limit,
+            Criteria criteria,
             String cursorFieldName,
             Class<T> entityClass,
             Function<T, String> idExtractor) {
 
-        Criteria criteria = Criteria.empty();
 
         if (StringUtils.hasText(after)) {
             criteria = criteria.and(cursorFieldName).greaterThan(after);

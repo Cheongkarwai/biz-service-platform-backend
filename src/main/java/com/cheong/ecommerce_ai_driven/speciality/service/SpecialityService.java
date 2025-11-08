@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class SpecialityService {
@@ -33,8 +35,8 @@ public class SpecialityService {
     }
 
     @Transactional(readOnly = true)
-    public Mono<Connection<SpecialityDTO>> findAll(String after, String before, int limit) {
-        return specialityRepository.findAll(after, before, limit)
+    public Mono<Connection<SpecialityDTO>> findAll(String after, String before, int limit, List<String> categoryIds) {
+        return specialityRepository.findAll(after, before, limit, categoryIds)
                 .flatMap(serviceConnection -> ConnectionUtil.mapConnection(serviceConnection, serviceMapper::mapToServiceDTO))
                 .doOnError(error -> log.error("Error occurred while fetching services", error));
     }

@@ -4,6 +4,7 @@ import com.cheong.ecommerce_ai_driven.common.data.Connection;
 import com.cheong.ecommerce_ai_driven.common.data.CursorPaginationRepository;
 import com.cheong.ecommerce_ai_driven.customer.entity.Customer;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
@@ -23,6 +24,7 @@ public class CustomCustomerRepositoryImpl implements CustomCustomerRepository, C
 
     @Override
     public Mono<Connection<Customer>> findAll(String after, String before, int limit) {
-        return findAll(after, before, limit, "id", Customer.class, Customer::getId);
+        Criteria criteria = Criteria.empty();
+        return findAll(after, before, limit, criteria, "id", Customer.class, Customer::getId);
     }
 }

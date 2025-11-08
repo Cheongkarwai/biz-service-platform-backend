@@ -4,6 +4,7 @@ import com.cheong.ecommerce_ai_driven.common.data.Connection;
 import com.cheong.ecommerce_ai_driven.common.data.CursorPaginationRepository;
 import com.cheong.ecommerce_ai_driven.speciality.model.Category;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.data.relational.core.query.Criteria;
 import reactor.core.publisher.Mono;
 
 public class CustomCategoryRepositoryImpl implements CustomCategoryRepository, CursorPaginationRepository<Category> {
@@ -18,7 +19,8 @@ public class CustomCategoryRepositoryImpl implements CustomCategoryRepository, C
     public Mono<Connection<Category>> findAll(String after,
                                               String before,
                                               int limit) {
-        return findAll(after, before, limit, "id", Category.class, Category::getId);
+        Criteria criteria = Criteria.empty();
+        return findAll(after, before, limit, criteria, "id", Category.class, Category::getId);
     }
 
     @Override

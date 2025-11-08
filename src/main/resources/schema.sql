@@ -4,8 +4,9 @@ CREATE TABLE IF NOT EXISTS speciality
 (
     id   VARCHAR(255) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    bucket_name VARCHAR(255) NOT NULL,
-    object_key TEXT NOT NULL,
+    icon VARCHAR(200) NOT NULL,
+    category_id VARCHAR(255) NOT NULL,
+    FOREIGN KEY (category_id) REFERENCES category (id),
     version INT NOT NULL DEFAULT 0
 );
 
