@@ -121,4 +121,8 @@ public class CompanyService {
                 .flatMap(address -> businessAddressRepository.save(new BusinessAddress(companyId, address.getId())));
     }
 
+    public Mono<BusinessDTO> findByEmail(String email) {
+        return companyRepository.findByEmail(email)
+                .map(companyMapper::mapToCompanyDTO);
+    }
 }

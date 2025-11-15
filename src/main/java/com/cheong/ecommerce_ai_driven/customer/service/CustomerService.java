@@ -15,6 +15,8 @@ import com.cheong.ecommerce_ai_driven.customer.mapper.CustomerMapper;
 import com.cheong.ecommerce_ai_driven.customer.repository.CustomerRepository;
 import com.cheong.ecommerce_ai_driven.customer.validation.ValidationService;
 import com.cheong.ecommerce_ai_driven.user.adapter.AuthProvider;
+import com.cheong.ecommerce_ai_driven.webhook.dto.EventType;
+import com.cheong.ecommerce_ai_driven.webhook.service.OutboxEventService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,13 +46,16 @@ public class CustomerService {
 
     private final AuthProvider authProvider;
 
+    private final OutboxEventService outboxEventService;
+
     public CustomerService(CustomerRepository customerRepository,
                            CustomerMapper customerMapper,
                            IAccountService accountService,
                            ValidationService validationService,
                            RetryUtil retryUtil,
                            ObjectMapper objectMapper,
-                           AuthProvider authProvider
+                           AuthProvider authProvider,
+                           OutboxEventService outboxEventService
     ) {
         this.customerRepository = customerRepository;
         this.customerMapper = customerMapper;
@@ -59,14 +64,15 @@ public class CustomerService {
         this.retryUtil = retryUtil;
         this.objectMapper = objectMapper;
         this.authProvider = authProvider;
+        this.outboxEventService = outboxEventService;
     }
 
     @Transactional(readOnly = true)
     public Mono<CustomerDTO> findById(String id) {
         return customerRepository.findById(id)
-                .switchIfEmpty(Mono.defer(()-> Mono.error(new CustomerNotFoundException("Customer not found"))))
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new CustomerNotFoundException("Customer not found"))))
                 .zipWhen(customer -> accountService.findByCustomerId(customer.getId()))
-                .flatMap(tuple-> authProvider.findByUserId(tuple.getT2().getSupabaseUserId())
+                .flatMap(tuple -> authProvider.findByUserId(tuple.getT2().getSupabaseUserId())
                         .map(userDTO -> customerMapper.mapToCustomerDTO(tuple.getT1(), tuple.getT2(), userDTO)));
     }
 
@@ -93,13 +99,15 @@ public class CustomerService {
                                 .status(AccountStatus.INACTIVE)
                                 .type(AccountType.PERSONAL)
                                 .build()))
-                        .flatMap(accountDTO -> authProvider.signUp(customerInput.getAccountDetails())
-                                .flatMap(userDTO -> accountService.findById(accountDTO.getId())
-                                        .map(savedAccount -> {
-                                            savedAccount.setSupabaseUserId(userDTO.getId());
-                                            return savedAccount;
-                                        }).flatMap(accountService::save))
-                        )
+                        .flatMap(accountDTO -> {
+                            try {
+                                return outboxEventService.save(accountDTO.getId(),
+                                        objectMapper.writeValueAsString(customerInput.getAccountDetails()),
+                                        EventType.CREATE_ACCOUNT);
+                            } catch (JsonProcessingException e) {
+                                return Mono.error(new RuntimeException(e));
+                            }
+                        })
                         .retryWhen(retryUtil.getRetrySpec())
                         .then());
     }
