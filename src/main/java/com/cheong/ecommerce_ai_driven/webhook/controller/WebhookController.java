@@ -31,8 +31,4 @@ public class WebhookController {
         return callbackService.handleOutboxEvent(payload);
     }
 
-    @PostMapping("/user/created")
-    public Mono<Void> userCreated(@RequestBody SupabaseCdcWebhookPayload<UserDTO> payload){
-        return callbackService.handleUserCreatedEvent(payload);
-    }
 }
