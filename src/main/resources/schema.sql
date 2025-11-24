@@ -133,3 +133,4 @@ CREATE TABLE IF NOT EXISTS category
   name        VARCHAR(100) NOT NULL,
   version INT NOT NULL DEFAULT 0
 );
+

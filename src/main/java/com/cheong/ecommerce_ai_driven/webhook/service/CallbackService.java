@@ -1,6 +1,7 @@
 package com.cheong.ecommerce_ai_driven.webhook.service;
 
 import com.cheong.ecommerce_ai_driven.account.dto.AccountType;
+import com.cheong.ecommerce_ai_driven.account.exception.UserNotFoundException;
 import com.cheong.ecommerce_ai_driven.account.service.AccountService;
 import com.cheong.ecommerce_ai_driven.common.web.OutboxEvent;
 import com.cheong.ecommerce_ai_driven.company.service.CompanyService;
@@ -38,10 +39,8 @@ public class CallbackService {
 
     public Mono<Void> handleUserCreatedEvent(SupabaseCdcWebhookPayload<UserDTO> payload) {
         UserDTO userDTO = payload.getRecord();
-        if (userDTO == null) {
-            return Mono.empty();
-        }
-        return Mono.just(userDTO)
+        return Mono.justOrEmpty(userDTO)
+                .switchIfEmpty(Mono.defer(()-> Mono.error(new UserNotFoundException())))
                 .flatMap(user -> {
                     if (AccountType.PERSONAL.equals(user.getAppMetadata().get("account_type"))) {
                        return handleCustomerAccountCreatedEvent(user);

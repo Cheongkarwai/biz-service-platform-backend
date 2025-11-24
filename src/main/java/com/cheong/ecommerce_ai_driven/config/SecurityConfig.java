@@ -18,6 +18,7 @@ public class SecurityConfig {
         return http
                 .cors(ServerHttpSecurity.CorsSpec::disable)
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .headers(headerSpec -> headerSpec.frameOptions(ServerHttpSecurity.HeaderSpec.FrameOptionsSpec::disable))
                 .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.anyExchange().permitAll())
                 .build();
     }
@@ -25,9 +26,10 @@ public class SecurityConfig {
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.addAllowedOrigin("http://localhost:4200");
+        corsConfig.addAllowedOriginPattern("*");
         corsConfig.addAllowedMethod("*");
         corsConfig.addAllowedHeader("*");
+        corsConfig.addExposedHeader("Mcp-Session-Id");
         corsConfig.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
